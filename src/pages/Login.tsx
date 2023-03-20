@@ -1,10 +1,18 @@
 import { Box, TextField, Button } from "@mui/material";
 import { Container } from "@mui/system";
+import { login } from "../api/login";
 
 export const Login = () => {
-  const handleSubmit = (event: any) => {
+  const loginSubmitHandler = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+
+    const formData = new FormData(event.currentTarget);
+    const loginResult = await login({
+      id: formData.get("id") as string,
+      password: formData.get("password") as string,
+    });
   };
 
   return (
@@ -18,11 +26,12 @@ export const Login = () => {
           justifyContent: "center",
         }}
       >
-        <Box component="form" onSubmit={handleSubmit} noValidate>
+        <Box component="form" onSubmit={loginSubmitHandler} noValidate>
           <TextField
             margin="normal"
             required
             fullWidth
+            name="id"
             id="id"
             label="id"
             autoFocus
@@ -31,6 +40,7 @@ export const Login = () => {
             margin="normal"
             required
             fullWidth
+            name="password"
             label="Password"
             type="password"
             id="password"
