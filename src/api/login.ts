@@ -1,6 +1,12 @@
+import { saveAccessTokenToLocalStorage } from "./../utils/accessToken";
 import axios from "axios";
 
-type LoginResult = "success" | "fail";
+type LoginResult =
+  | {
+      status: string;
+      accessToken: string;
+    }
+  | "fail";
 
 export interface LoginRequest {
   id: string;
@@ -9,8 +15,25 @@ export interface LoginRequest {
 
 export const login = async (args: LoginRequest): Promise<LoginResult> => {
   const loginResult = await axios.post(`/login`, {
-    body: JSON.stringify(args),
+    id: args.id,
+    password: args.password,
   });
+  saveAccessTokenToLocalStorage(loginResult.data.accessToken);
+  return loginResult ? loginResult.data : "fail";
+};
 
-  return loginResult ? "success" : "fail";
+export const getUserInfo = async (
+  accessToken: string
+): Promise<LoginResult> => {
+  const userInfoResult = await axios
+    .get(`/user`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .catch(() => {
+      return null;
+    });
+
+  return userInfoResult ? userInfoResult.data : null;
 };

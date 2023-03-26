@@ -1,18 +1,39 @@
 import { Box, TextField, Button } from "@mui/material";
 import { Container } from "@mui/system";
-import { login } from "../api/login";
+import { useNavigate } from "react-router-dom";
+import { getUserInfo, login } from "../api/login";
 
 export const Login = () => {
+  const navigate = useNavigate();
+
   const loginSubmitHandler = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
+
     const loginResult = await login({
       id: formData.get("id") as string,
       password: formData.get("password") as string,
     });
+
+    if (loginResult === "fail") {
+      navigate("/");
+      return;
+    }
+    fetchUserProfile(loginResult.accessToken);
+    navigate("/common");
+  };
+
+  const fetchUserProfile = async (accessToken: string) => {
+    const userInfoResult = await getUserInfo(accessToken);
+    if (userInfoResult == null) {
+      navigate("/");
+      return;
+    }
+
+    return userInfoResult ? true : false;
   };
 
   return (
