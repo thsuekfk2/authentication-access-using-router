@@ -1,3 +1,3 @@
 export const Admin = () => {
-  return <div></div>;
+  return <>어드민 페이지 입니다.</>;
 };

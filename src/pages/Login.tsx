@@ -1,7 +1,7 @@
 import { Box, TextField, Button } from "@mui/material";
 import { Container } from "@mui/system";
 import { useNavigate } from "react-router-dom";
-import { getUserInfo, login } from "../api/login";
+import { login } from "../api/login";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -22,18 +22,7 @@ export const Login = () => {
       navigate("/");
       return;
     }
-    fetchUserProfile(loginResult.accessToken);
     navigate("/common");
-  };
-
-  const fetchUserProfile = async (accessToken: string) => {
-    const userInfoResult = await getUserInfo(accessToken);
-    if (userInfoResult == null) {
-      navigate("/");
-      return;
-    }
-
-    return userInfoResult ? true : false;
   };
 
   return (

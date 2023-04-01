@@ -1,3 +1,4 @@
+import { UserInfo } from "./../types/user";
 import { saveAccessTokenToLocalStorage } from "./../utils/accessToken";
 import axios from "axios";
 
@@ -22,9 +23,7 @@ export const login = async (args: LoginRequest): Promise<LoginResult> => {
   return loginResult ? loginResult.data : "fail";
 };
 
-export const getUserInfo = async (
-  accessToken: string
-): Promise<LoginResult> => {
+export const getUserInfo = async (accessToken: string): Promise<UserInfo> => {
   const userInfoResult = await axios
     .get(`/user`, {
       headers: {
