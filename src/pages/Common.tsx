@@ -1,17 +1,23 @@
-import { Box, Container } from "@mui/system";
+import { Container } from "@mui/system";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getCatData } from "../api/cat";
 import { CAT_BASE_URL } from "../api/const";
 
 export const Common = () => {
-  const [catUrl, setCatUrl] = useState<String | null>(null);
+  const [catUrl, setCatUrl] = useState("");
   const isCatImageFetched = useRef(false);
+  const [imageLoading, setImageLoading] = useState(true);
+
+  const handleImageLoad = () => {
+    setImageLoading(false);
+  };
 
   const getCatImage = useCallback(async () => {
     const catData = await getCatData();
-    if (catData.url) setCatUrl(catData.url);
+    if (catData.url) setCatUrl(CAT_BASE_URL + catData.url);
 
     isCatImageFetched.current = true;
+    setImageLoading(false);
   }, []);
 
   useEffect(() => {
@@ -23,17 +29,20 @@ export const Common = () => {
       maxWidth="sm"
       sx={{
         display: "flex",
-        height: "100vh",
+        height: "90vh",
         justifyContent: "center",
         alignItems: "center",
       }}
     >
+      {imageLoading && <div>로딩중</div>}
       <img
-        src={CAT_BASE_URL + catUrl}
+        src={catUrl}
         style={{
           maxHeight: "500px",
           maxWidth: "70vw",
+          visibility: imageLoading ? "hidden" : "visible",
         }}
+        onLoad={handleImageLoad}
       />
     </Container>
   );
