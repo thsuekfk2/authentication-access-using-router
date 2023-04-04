@@ -76,4 +76,9 @@ export const handlers = [
       return res(ctx.status(401), ctx.json({ message: "Unauthorized" }));
     }
   }),
+
+  rest.post("/logout", (req, res, ctx) => {
+    sessionStorage.removeItem("accessToken");
+    return res(ctx.status(204));
+  }),
 ];

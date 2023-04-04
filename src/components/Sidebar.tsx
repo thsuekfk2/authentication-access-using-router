@@ -1,9 +1,10 @@
 import { AppBar, Button, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { UserAtom } from "../atoms/user";
 import { SidebarElement } from "../types/\bsidebar";
+import { logout } from "../api/login";
 
 interface SidebarProps {
   sidebarContent: SidebarElement[];
@@ -11,8 +12,7 @@ interface SidebarProps {
 
 export const Sidebar = ({ sidebarContent }: SidebarProps) => {
   const navigate = useNavigate();
-
-  const userProfile = useRecoilValue(UserAtom);
+  const [userProfile, setUserProfile] = useRecoilState(UserAtom);
 
   const sidebarHomeClickHandler = () => {
     navigate("/home");
@@ -20,6 +20,12 @@ export const Sidebar = ({ sidebarContent }: SidebarProps) => {
 
   const sidebarMenuClickHandler = (path: string) => {
     navigate(path);
+  };
+
+  const logoutHandler = async () => {
+    await logout();
+    setUserProfile(null);
+    navigate("/");
   };
 
   return (
@@ -50,6 +56,15 @@ export const Sidebar = ({ sidebarContent }: SidebarProps) => {
                 </Button>
               );
             })}
+          {userProfile ? (
+            <div className="sidebar-footer">
+              {userProfile?.username}
+              {userProfile?.role.includes("admin") && "(어드민)"}님 환영합니다.
+              <Button onClick={logoutHandler}>로그아웃</Button>
+            </div>
+          ) : (
+            <div onClick={sidebarHomeClickHandler}>로그인이 필요합니다.</div>
+          )}
         </Toolbar>
       </AppBar>
     </Box>

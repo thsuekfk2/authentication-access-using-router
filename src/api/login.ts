@@ -36,3 +36,7 @@ export const getUserInfo = async (accessToken: string): Promise<UserInfo> => {
 
   return userInfoResult ? userInfoResult.data : null;
 };
+
+export const logout = async (): Promise<void> => {
+  await fetch(`/logout`);
+};
